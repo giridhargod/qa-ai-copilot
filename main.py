@@ -1,28 +1,35 @@
 from dotenv import load_dotenv
-import os
-load_dotenv()
-print("API KEY LOADED:","YES" if os.getenv("OPENAI_API_KEY") else "NO")
-from crewai import Crew
-from agents import screen_analyzer, pii_detector, test_case_generator, report_generator
-from tasks import analyze_screen_task, pii_detection_task, test_case_task, report_task
+import json
 
+from crewai import Crew
+from scraper import extract_fields_from_url
+from tasks import create_tasks
+from agents import screen_analyzer, pii_detector, test_case_generator, report_generator
+
+# Load environment variables
+load_dotenv()
+
+# Input URL
+url = input("Enter URL: ")
+
+# Extract fields
+fields = extract_fields_from_url(url)
+
+# Convert to JSON string (IMPORTANT)
+screen_data = json.dumps(fields, indent=2)
+
+# Create tasks
+tasks = create_tasks(screen_data)
+
+# Create Crew
 crew = Crew(
-    agents=[
-        screen_analyzer,
-        pii_detector,
-        test_case_generator,
-        report_generator
-    ],
-    tasks=[
-        analyze_screen_task,
-        pii_detection_task,
-        test_case_task,
-        report_task
-    ],
+    agents=[screen_analyzer, pii_detector, test_case_generator, report_generator],
+    tasks=tasks,
     verbose=True
 )
 
+# Run
 result = crew.kickoff()
 
-print("\n\nFINAL RESULT:\n")
+print("\n\n===== FINAL OUTPUT =====\n")
 print(result)

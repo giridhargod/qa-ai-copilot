@@ -1,23 +1,24 @@
 import requests
-import certifi
 from bs4 import BeautifulSoup
 
+
 def extract_fields_from_url(url):
-    response = requests.get(url, verify=certifi.where())
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    inputs = soup.find_all("input")
+        inputs = soup.find_all("input")
 
-    fields = []
+        fields = []
 
-    for inp in inputs:
-        name = inp.get("name")
-        field_type = inp.get("type")
-
-        if name:
+        for inp in inputs:
             fields.append({
-                "name": name,
-                "type": field_type
+                "name": inp.get("name"),
+                "type": inp.get("type")
             })
 
-    return fields
+        return fields
+
+    except Exception as e:
+        print("Error while scraping:", e)
+        return []
