@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 venv/
 __pycache__/
 *.pyc
@@ -5,4 +6,17 @@ __pycache__/
 .env.*
 *.log
 .idea/
+=======
+# Python cache
+__pycache__/
+*.pyc
+
+# ignore environment variables
+.env
+
+# ignore virtual environment
+venv/
+
+# VS Code settings
+>>>>>>> 6d8a0dc814e2c01133b4c3bd0c921f1b960dd5cc
 .vscode/
